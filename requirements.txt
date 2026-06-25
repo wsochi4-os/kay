@@ -1,0 +1,27 @@
+# Kutti - Personal AI CLI Agent
+# OpenCode-compatible authentication & provider system
+
+# Core dependencies
+aiohttp>=3.8.0
+cryptography>=41.0.0
+pyyaml>=6.0.1
+
+# Optional dependencies for native credential storage
+# macOS Keychain
+keyring>=24.0.0; sys_platform == "darwin"
+
+# Linux Secret Service
+secretstorage>=3.3.0; sys_platform.startswith("linux")
+
+# Windows Credential Manager  
+win32credentialmanager>=1.0.0; sys_platform == "win32"
+
+# Development dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
+
+# Type hints (for Python < 3.9)
+typing-extensions>=4.0.0; python_version < "3.9"
