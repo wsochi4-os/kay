@@ -1,0 +1,74 @@
+{
+  "name": "Kutti AI CLI Agent",
+  "description": "Personal AI CLI agent for Android with built-in terminal, Ubuntu environment, and multi-provider authentication",
+  "homepage": "https://github.com/wsochi4-os/kay",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wsochi4-os/kay.git"
+  },
+  "author": "Kutti Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wsochi4-os/kay/issues"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "android",
+    "terminal",
+    "ubuntu",
+    "development",
+    "agent",
+    "mcp",
+    "llm",
+    "chat"
+  ],
+  "android": {
+    "package_name": "dev.kutti.app",
+    "version_code": 1,
+    "version_name": "1.0.0",
+    "min_sdk": 26,
+    "target_sdk": 34,
+    "application_id": "dev.kutti.app",
+    "build_tools": "34.0.0",
+    "gradle_version": "8.4",
+    "kotlin_version": "1.9.0"
+  },
+  "release": {
+    "types": ["alpha", "beta", "release"],
+    "default_branch": "main",
+    "tag_prefix": "v",
+    "assets": [
+      {
+        "name": "kutti-debug.apk",
+        "type": "android-apk",
+        "description": "Debug build for development and testing"
+      },
+      {
+        "name": "kutti-release.apk",
+        "type": "android-apk",
+        "description": "Release build for production use"
+      },
+      {
+        "name": "kutti-python.tar.gz",
+        "type": "python-package",
+        "description": "Python package with OpenCode-compatible authentication"
+      }
+    ]
+  },
+  "signing": {
+    "keystore": "release.keystore",
+    "alias": "kutti",
+    "store_password": "${{ secrets.ANDROID_STORE_PASSWORD }}",
+    "key_password": "${{ secrets.ANDROID_KEY_PASSWORD }}",
+    "key_algorithm": "RSA",
+    "key_size": 2048,
+    "validity": 10000
+  },
+  "build": {
+    "jdk_version": "17",
+    "android_sdk": "34",
+    "build_timeout": 120,
+    "cache_enabled": true
+  }
+}

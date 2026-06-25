@@ -1,0 +1,255 @@
+name: Android Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+      - release/*
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release_type:
+        description: 'Release type'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - release
+
+env:
+  JAVA_VERSION: '17'
+  ANDROID_SDK_VERSION: '34'
+  ANDROID_NDK_VERSION: '26.2.11394342'
+  ANDROID_BUILD_TOOLS: '34.0.0'
+  ANDROID_EMULATOR: '31.3.14'
+  ANDROID_PLATFORM: 'android-34'
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          android-sdk-version: ${{ env.ANDROID_SDK_VERSION }}
+          android-ndk-version: ${{ env.ANDROID_NDK_VERSION }}
+          android-build-tools-version: ${{ env.ANDROID_BUILD_TOOLS }}
+          android-emulator-version: ${{ env.ANDROID_EMULATOR }}
+          android-platform: ${{ env.ANDROID_PLATFORM }}
+
+      - name: Install Termux dependencies
+        run: |
+          # Install Termux packages required for building
+          sudo apt-get update
+          sudo apt-get install -y proot
+
+      - name: Download Ubuntu rootfs
+        run: |
+          # Download Ubuntu rootfs for the app
+          ./scripts/download-bootstrap.sh || echo "Rootfs download skipped (will use cached)"
+
+      - name: Build debug APK
+        run: |
+          cd packages/android
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Build release APK
+        run: |
+          cd packages/android
+          # Create keystore if not exists (for CI)
+          if [ ! -f release.keystore ]; then
+            keytool -genkey -v -keystore release.keystore -alias kutti -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Kutti, OU=AI, O=Kutti, L=World, ST=World, C=US"
+          fi
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Rename APKs with version
+        run: |
+          cd packages/android/app/build/outputs/apk
+          VERSION=${{ github.event.inputs.version || 'dev' }}
+          
+          # Debug APK
+          if [ -f debug/app-debug.apk ]; then
+            mv app-debug.apk kutti-${VERSION}-debug.apk
+          fi
+          
+          # Release APK
+          if [ -f release/app-release.apk ]; then
+            mv app-release.apk kutti-${VERSION}-release.apk
+          fi
+
+      - name: Upload APKs as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kutti-apks
+          path: packages/android/app/build/outputs/apk/*.apk
+          retention-days: 30
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: packages/android/app/build/outputs/apk/*.apk
+          name: Kutti ${{ github.event.inputs.version || github.ref_name }}
+          tag_name: ${{ github.event.inputs.version || github.ref_name }}
+          body: |
+            ## Kutti AI CLI Agent - Android Release
+            
+            ### 📱 What's New
+            - Complete personal AI CLI agent for Android
+            - Built-in terminal emulator with Ubuntu environment
+            - Multi-provider authentication support
+            - Offline-capable AI chat and development tools
+            
+            ### 📦 Assets
+            - **kutti-*-debug.apk**: Debug build for testing
+            - **kutti-*-release.apk**: Release build for production
+            
+            ### 🚀 Installation
+            1. Download the APK file from assets below
+            2. Transfer to your Android device
+            3. Install the APK (enable "Unknown sources" if needed)
+            4. Open Kutti and follow the setup instructions
+            
+            ### ⚠️ Requirements
+            - Android 8.0+ (API 26+)
+            - Minimum 2GB RAM recommended
+            - 500MB+ free storage for Ubuntu environment
+            - Internet connection for initial setup
+            
+            ### 🔧 First Run
+            On first launch, the app will:
+            1. Download Ubuntu rootfs (~200MB)
+            2. Set up the terminal environment
+            3. Configure the AI providers
+            
+            This may take a few minutes depending on your internet speed.
+            
+            ### 📝 Notes
+            - Debug builds have full logging enabled
+            - Release builds are optimized for production use
+            - Both builds include all features and providers
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-python:
+    name: Build Python Package
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build Python package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: Upload Python package
+        uses: actions/upload-artifact@v4
+        with:
+          name: kutti-python
+          path: dist/*
+          retention-days: 30
+
+  publish-release:
+    name: Publish Release
+    needs: [build-android, build-python]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Download APKs
+        uses: actions/download-artifact@v4
+        with:
+          name: kutti-apks
+          path: apks
+
+      - name: Download Python packages
+        uses: actions/download-artifact@v4
+        with:
+          name: kutti-python
+          path: python-packages
+
+      - name: Create comprehensive release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            apks/*.apk
+            python-packages/*
+          name: Kutti ${{ github.event.inputs.version || github.ref_name }} - Full Release
+          tag_name: ${{ github.event.inputs.version || github.ref_name }}
+          body: |
+            ## 🎉 Kutti Full Release
+            
+            Complete personal AI CLI agent with Android and Python packages.
+            
+            ### 📱 Android APKs
+            - **Debug APK**: For development and testing
+            - **Release APK**: For production use
+            
+            ### 🐍 Python Package
+            - OpenCode-compatible authentication system
+            - 9 AI provider implementations
+            - CLI tools for development
+            
+            ### 📦 Installation Options
+            
+            #### Android
+            ```bash
+            # Download APK from assets and install on device
+            adb install kutti-*.apk
+            ```
+            
+            #### Python
+            ```bash
+            pip install kutti-*.whl
+            # or
+            pip install kutti-*.tar.gz
+            ```
+            
+            ### 🚀 Quick Start
+            
+            **Android**:
+            1. Install APK
+            2. Open app and complete setup
+            3. Authenticate with your AI provider
+            4. Start using the terminal and AI features
+            
+            **Python**:
+            ```bash
+            python kutti.py --help
+            python kutti.py login openai
+            python kutti.py providers list
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
