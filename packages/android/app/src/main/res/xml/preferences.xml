@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <PreferenceCategory
+        android:title="AI Provider">
+        
+        <ListPreference
+            android:key="provider"
+            android:title="Default Provider"
+            android:summary="%s"
+            android:entries="@array/providers"
+            android:entryValues="@array/provider_values"
+            android:defaultValue="groq"/>
+            
+        <EditTextPreference
+            android:key="api_key"
+            android:title="API Key"
+            android:summary="Set your API key for the selected provider"
+            android:inputType="textPassword"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="Model">
+        
+        <EditTextPreference
+            android:key="model"
+            android:title="Default Model"
+            android:summary="%s"
+            android:defaultValue="llama-3.3-70b-versatile"/>
+            
+        <Preference
+            android:key="model_list"
+            android:title="Available Models"
+            android:summary="View available models for your provider"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="Agent">
+        
+        <SwitchPreference
+            android:key="auto_confirm"
+            android:title="Auto-confirm Actions"
+            android:summary="Automatically confirm shell commands and file modifications"
+            android:defaultValue="false"/>
+            
+        <ListPreference
+            android:key="max_iterations"
+            android:title="Max Iterations"
+            android:summary="%s"
+            android:entries="@array/iterations"
+            android:entryValues="@array/iteration_values"
+            android:defaultValue="20"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="Terminal">
+        
+        <ListPreference
+            android:key="terminal_theme"
+            android:title="Theme"
+            android:summary="%s"
+            android:entries="@array/themes"
+            android:entryValues="@array/theme_values"
+            android:defaultValue="gruvbox-dark"/>
+            
+        <Preference
+            android:key="font_settings"
+            android:title="Font Settings"
+            android:summary="Configure terminal font"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="About">
+        
+        <Preference
+            android:key="version"
+            android:title="Version"
+            android:summary="1.0.0"/>
+            
+        <Preference
+            android:key="license"
+            android:title="License"
+            android:summary="MIT License"/>
+    </PreferenceCategory>
+    
+</PreferenceScreen>

@@ -1,0 +1,17 @@
+{
+  "name": "kutti-plugin-shell",
+  "version": "1.0.0",
+  "description": "Shell command execution plugin for Kutti",
+  "kutti": {
+    "type": "plugin",
+    "minVersion": "1.0.0",
+    "commands": ["shell"],
+    "tools": ["shell"],
+    "hooks": []
+  },
+  "main": "src/index.js",
+  "type": "module",
+  "keywords": ["kutti", "plugin", "shell", "commands"],
+  "author": "Kutti Community",
+  "license": "MIT"
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="providers">
+        <item>Groq</item>
+        <item>Gemini</item>
+        <item>OpenRouter</item>
+        <item>Mistral</item>
+        <item>Cerebras</item>
+        <item>Cohere</item>
+        <item>Together AI</item>
+        <item>Ollama</item>
+        <item>Hugging Face</item>
+        <item>DeepSeek</item>
+        <item>Fireworks AI</item>
+        <item>OpenAI</item>
+        <item>Anthropic</item>
+    </string-array>
+    
+    <string-array name="provider_values">
+        <item>groq</item>
+        <item>gemini</item>
+        <item>openrouter</item>
+        <item>mistral</item>
+        <item>cerebras</item>
+        <item>cohere</item>
+        <item>together</item>
+        <item>ollama</item>
+        <item>huggingface</item>
+        <item>deepseek</item>
+        <item>fireworks</item>
+        <item>openai</item>
+        <item>anthropic</item>
+    </string-array>
+    
+    <string-array name="iterations">
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    
+    <string-array name="iteration_values">
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    
+    <string-array name="themes">
+        <item>Gruvbox Dark</item>
+        <item>Gruvbox Light</item>
+        <item>Dracula</item>
+        <item>Solarized Dark</item>
+        <item>Solarized Light</item>
+        <item>Monokai</item>
+        <item>Nord</item>
+    </string-array>
+    
+    <string-array name="theme_values">
+        <item>gruvbox-dark</item>
+        <item>gruvbox-light</item>
+        <item>dracula</item>
+        <item>solarized-dark</item>
+        <item>solarized-light</item>
+        <item>monokai</item>
+        <item>nord</item>
+    </string-array>
+</resources>

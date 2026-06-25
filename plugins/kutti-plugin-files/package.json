@@ -1,0 +1,17 @@
+{
+  "name": "kutti-plugin-files",
+  "version": "1.0.0",
+  "description": "File operations plugin for Kutti",
+  "kutti": {
+    "type": "plugin",
+    "minVersion": "1.0.0",
+    "commands": ["files"],
+    "tools": ["read_file", "write_file", "list_files", "search_files"],
+    "hooks": []
+  },
+  "main": "src/index.js",
+  "type": "module",
+  "keywords": ["kutti", "plugin", "files", "file-operations"],
+  "author": "Kutti Community",
+  "license": "MIT"
+}

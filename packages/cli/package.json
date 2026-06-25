@@ -1,0 +1,53 @@
+{
+  "name": "@kutti/cli",
+  "version": "1.0.0",
+  "description": "Kutti CLI - Your Personal AI CLI Agent",
+  "main": "dist/index.js",
+  "bin": {
+    "kutti": "./dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "link": "pnpm build && pnpm link --global",
+    "unlink": "pnpm unlink --global"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "crypto-js": "^4.2.0",
+    "execa": "^8.0.1",
+    "inquirer": "^11.0.0",
+    "node-fetch": "^3.3.2",
+    "ora": "^8.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/crypto-js": "^4.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "@vitest/coverage-v8": "^1.1.0",
+    "eslint": "^8.56.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "agent",
+    "mcp",
+    "kutti"
+  ],
+  "author": "Kutti Community",
+  "license": "MIT"
+}

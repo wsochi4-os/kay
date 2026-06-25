@@ -1,0 +1,40 @@
+{
+  "name": "kutti",
+  "version": "1.0.0",
+  "description": "Kutti - Your Personal AI CLI Agent for Android",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
+  "scripts": {
+    "build": "pnpm --filter @kutti/cli build",
+    "build:android": "cd packages/android && ./gradlew assembleDebug",
+    "build:all": "pnpm build && pnpm build:android",
+    "dev": "pnpm --filter @kutti/cli dev",
+    "test": "pnpm --filter @kutti/cli test",
+    "lint": "pnpm --filter @kutti/cli lint",
+    "publish:cli": "pnpm --filter @kutti/cli publish --access public",
+    "bootstrap": "./scripts/download-bootstrap.sh"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "agent",
+    "android",
+    "mcp",
+    "terminal",
+    "ubuntu"
+  ],
+  "author": "Kutti Community",
+  "license": "MIT",
+  "devDependencies": {
+    "pnpm": "^8.0.0",
+    "typescript": "^5.3.0",
+    "tsx": "^4.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
